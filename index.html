@@ -1,0 +1,375 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>doNOTdelete</title>  <!-- Font -->  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      overflow: hidden;
+      background: black;
+    }
+
+    .screen {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      color: white;
+    }
+
+    /* USER WALLPAPER */
+    .wallpaper {
+      position: absolute;
+      inset: 0;
+      background-image: url('./wallpaper.jpg');
+      background-size: cover;
+      background-position: center;
+      transform: scale(1.05);
+      filter: blur(2px);
+    }
+
+    /* DARK OVERLAY */
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+    }
+
+    /* GRAIN */
+    .grain {
+      position: absolute;
+      inset: 0;
+      opacity: 0.07;
+      background-image: url('https://www.transparenttextures.com/patterns/asfalt-light.png');
+      pointer-events: none;
+      mix-blend-mode: soft-light;
+    }
+
+    /* CLOCK */
+    .clock {
+      position: absolute;
+      top: 42px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      z-index: 5;
+    }
+
+    .time {
+      font-size: 54px;
+      font-weight: 300;
+      letter-spacing: -2px;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .date {
+      margin-top: 6px;
+      font-size: 13px;
+      opacity: 0.9;
+      font-weight: 300;
+    }
+
+    /* LOGIN CARD */
+    .login-card {
+      position: absolute;
+      top: 52%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 660px;
+      height: 470px;
+      border-radius: 34px;
+      background: rgba(20, 20, 30, 0.28);
+      backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.14);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+      z-index: 5;
+      overflow: hidden;
+    }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding-bottom: 60px;
+    }
+
+    /* DINO */
+    .dino {
+      width: 70px;
+      image-rendering: pixelated;
+      margin-bottom: 18px;
+      filter: drop-shadow(0 5px 12px rgba(0,0,0,0.4));
+    }
+
+    .username {
+      font-size: 42px;
+      font-weight: 600;
+      letter-spacing: -2px;
+      margin-bottom: 14px;
+      text-shadow: 0 4px 18px rgba(0,0,0,0.35);
+    }
+
+    .subtitle {
+      font-size: 15px;
+      font-weight: 300;
+      opacity: 0.7;
+      margin-bottom: 42px;
+    }
+
+    /* PASSWORD */
+    .password-box {
+      width: 390px;
+      height: 56px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.12);
+      color: white;
+      padding: 0 24px;
+      font-size: 16px;
+      outline: none;
+      transition: 0.2s ease;
+    }
+
+    .password-box:focus {
+      border-color: rgba(255,255,255,0.28);
+      background: rgba(0,0,0,0.18);
+    }
+
+    .password-box::placeholder {
+      color: rgba(255,255,255,0.45);
+    }
+
+    /* FORGOT PASSWORD */
+    .forgot {
+      margin-top: 14px;
+      font-size: 13px;
+      opacity: 0.45;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .forgot:hover {
+      opacity: 0.8;
+    }
+
+    .hint {
+      margin-top: 8px;
+      font-size: 13px;
+      opacity: 0;
+      transition: 0.25s;
+    }
+
+    .hint.show {
+      opacity: 0.6;
+    }
+
+    /* ERROR */
+    .error {
+      margin-top: 22px;
+      height: 20px;
+      font-size: 15px;
+      color: #ffb7b7;
+      opacity: 0.95;
+      font-weight: 400;
+    }
+
+    /* BOTTOM BAR */
+    .bottom-bar {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 78px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 36px;
+      font-size: 14px;
+      opacity: 0.72;
+    }
+
+    /* LOADING SCREEN */
+    .loading-screen {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      backdrop-filter: blur(14px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 100;
+      animation: fade 0.6s ease;
+    }
+
+    .loading-screen.show {
+      display: flex;
+    }
+
+    .loading-title {
+      font-size: 28px;
+      font-weight: 300;
+      margin-bottom: 10px;
+    }
+
+    .loading-subtitle {
+      font-size: 14px;
+      opacity: 0.65;
+    }
+
+    @keyframes fade {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .login-card {
+        width: 92%;
+        height: 440px;
+      }
+
+      .password-box {
+        width: 88%;
+      }
+
+      .username {
+        font-size: 42px;
+      }
+
+      .time {
+        font-size: 58px;
+      }
+    }
+  </style></head><body>
+  <div class="screen">
+    <div class="wallpaper"></div>
+    <div class="overlay"></div>
+    <div class="grain"></div><!-- CLOCK -->
+<div class="clock">
+  <div class="time" id="time"></div>
+  <div class="date" id="date"></div>
+</div>
+
+<!-- LOGIN CARD -->
+<div class="login-card">
+  <div class="content">
+
+    <!-- DINO -->
+    <img
+      class="dino"
+      src="https://i.imgur.com/6RLVbQk.png"
+      alt="dino"
+    />
+
+    <div class="username">tinyhuman</div>
+
+    <div class="subtitle">
+      this took years off my lifespan.
+    </div>
+
+    <input
+      type="password"
+      placeholder="password"
+      class="password-box"
+      id="passwordInput"
+    />
+
+    <div class="forgot" id="forgotBtn">
+      forgot password?
+    </div>
+
+    <div class="hint" id="hintText">
+      tiny monster
+    </div>
+
+    <div class="error" id="errorText"></div>
+  </div>
+
+  <!-- BOTTOM -->
+  <div class="bottom-bar">
+    <div>build 143: sleep deprived edition</div>
+    <div> connected to: home wifi</div>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="loading-title">loading desktop...</div>
+  <div class="loading-subtitle">now playing: Promise — Jimin</div>
+</div>
+
+  </div>  <script>
+    const passwordInput = document.getElementById('passwordInput');
+    const errorText = document.getElementById('errorText');
+    const loadingScreen = document.getElementById('loadingScreen');
+    const forgotBtn = document.getElementById('forgotBtn');
+    const hintText = document.getElementById('hintText');
+
+    const wrongResponses = [
+      'wrong creature',
+      'try again menace',
+      'nope.'
+    ];
+
+    /* LIVE CLOCK */
+    function updateClock() {
+      const now = new Date();
+
+      const time = now.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      });
+
+      const date = now.toLocaleDateString([], {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric'
+      });
+
+      document.getElementById('time').textContent = time;
+      document.getElementById('date').textContent = date;
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    /* HINT */
+    forgotBtn.addEventListener('click', () => {
+      hintText.classList.toggle('show');
+    });
+
+    /* PASSWORD */
+    passwordInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+
+        if (passwordInput.value.toLowerCase() === 'godzilla') {
+          errorText.textContent = '';
+          loadingScreen.classList.add('show');
+
+          setTimeout(() => {
+            window.location.href = 'desktop.html';
+          }, 2400);
+
+        } else {
+          const random = wrongResponses[Math.floor(Math.random() * wrongResponses.length)];
+          errorText.textContent = random;
+        }
+      }
+    });
+  </script></body>
+</html>
