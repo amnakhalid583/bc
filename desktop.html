@@ -156,20 +156,26 @@
 }
 
     /* Music widget + big icon */
-    .spotify {
-      position: absolute;
-      right: 46px;
-      top: 290px;
-      width: 280px;
+.spotify{
+  position: absolute;
 
-      backdrop-filter: blur(18px);
-      background: rgba(245,245,245,0.22);
-      border: 1px solid rgba(255,255,255,0.18);
-      border-radius: 18px;
-      padding: 16px;
-      z-index: 20;
-    }
+  right: 42px;
+  bottom: 100px;
 
+  width: 280px;
+
+  backdrop-filter: blur(18px);
+  background: rgba(245,245,245,0.22);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 18px;
+  padding: 16px;
+  z-index: 20;
+
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: 0.25s ease;
+}
     .spotify h3 {
       font-size: 15px;
       font-weight: 500;
@@ -478,7 +484,7 @@
   <img src="./png.png">
   <p>why_is_this_saved.png</p>
 </div>
-    <div class="fake-icon" style="top:90px; left:420px;">
+    <div class="fake-icon" style="top:470px; left:1180px;">
   <img src="./list.png">
   <p>grocery list???</p>
 </div>
