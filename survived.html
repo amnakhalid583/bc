@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>proof survived</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
+body{
+overflow:hidden;
+background:#efefef;
+}
+
+.desktop{
+
+width:100vw;
+height:100vh;
+
+position:relative;
+
+background:#efefef;
+
+background-image:
+radial-gradient(
+rgba(0,0,0,.025) 1px,
+transparent 1px
+);
+
+background-size:4px 4px;
+}
+
+/* Folder */
+
+.folder{
+
+position:absolute;
+
+top:80px;
+left:80px;
+
+width:560px;
+
+background:rgba(255,255,255,.88);
+
+backdrop-filter:blur(20px);
+
+border-radius:22px;
+
+overflow:hidden;
+
+border:
+1px solid rgba(0,0,0,.06);
+
+box-shadow:
+0 20px 50px rgba(0,0,0,.08);
+}
+
+.folder-top{
+
+padding:20px 24px;
+
+font-size:14px;
+font-weight:500;
+
+letter-spacing:.02em;
+
+border-bottom:
+1px solid rgba(0,0,0,.08);
+}
+
+.files{
+
+padding:10px;
+}
+
+.file{
+
+padding:14px 16px;
+
+border-radius:12px;
+
+cursor:pointer;
+
+transition:.2s;
+
+font-size:15px;
+}
+
+.file:hover{
+
+background:
+rgba(0,0,0,.05);
+}
+
+.final-file{
+
+margin-top:10px;
+
+padding-top:18px;
+
+border-top:
+1px solid rgba(0,0,0,.08);
+
+font-weight:500;
+}
+
+/* Popup */
+
+.popup{
+
+position:absolute;
+inset:0;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+background:rgba(0,0,0,.12);
+backdrop-filter:blur(8px);
+
+opacity:0;
+pointer-events:none;
+
+transition:.3s;
+
+z-index:100;
+}
+
+.popup.show{
+
+opacity:1;
+pointer-events:auto;
+}
+
+.window{
+
+width:560px;
+
+background:white;
+
+border-radius:18px;
+
+overflow:hidden;
+
+box-shadow:
+0 20px 60px rgba(0,0,0,.18);
+}
+
+.window-top{
+
+height:50px;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding:0 18px;
+
+border-bottom:
+1px solid rgba(0,0,0,.08);
+
+font-size:14px;
+}
+
+.close{
+
+cursor:pointer;
+font-size:18px;
+}
+
+.window-content{
+
+padding:36px;
+
+white-space:pre-line;
+
+font-size:17px;
+
+line-height:1.9;
+
+color:#222;
+}
+
+</style>
+</head>
+<body>
+
+<div class="desktop">
+
+<div class="folder">
+
+<div class="folder-top">
+SURVIVAL ARCHIVE
+</div>
+
+<div class="files">
+
+<div class="file" onclick="openFile('incident04')">
+incident_04.txt
+</div>
+
+<div class="file" onclick="openFile('incident11')">
+incident_11.txt
+</div>
+
+<div class="file" onclick="openFile('incident17')">
+incident_17.txt
+</div>
+
+<div class="file" onclick="openFile('incident23')">
+incident_23.txt
+</div>
+
+<div class="file" onclick="openFile('incident31')">
+incident_31.txt
+</div>
+
+<div class="file" onclick="openFile('incident42')">
+incident_42.txt
+</div>
+
+<div
+class="file final-file"
+onclick="openFile('report')">
+final_report.txt
+</div>
+
+</div>
+
+</div>
+
+<div class="popup" id="popup">
+
+<div class="window">
+
+<div class="window-top">
+
+<span id="fileTitle">
+incident.txt
+</span>
+
+<span
+class="close"
+onclick="closeFile()">
+×
+</span>
+
+</div>
+
+<div
+class="window-content"
+id="fileContent">
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const files = {
+
+incident04: {
+title: "incident_04.txt",
+content:
+`INCIDENT #04
+
+Bought a new phone case.
+
+STATUS:
+
+Dropped it immediately.
+
+Case received first scratch
+within 24 hours.`
+},
+
+incident11: {
+title: "incident_11.txt",
+content:
+`INCIDENT #11
+
+Logged into Instagram
+for one thing.
+
+Discovered another thing.
+
+STATUS:
+
+Mission technically completed.
+
+Mood not recovered.`
+},
+
+incident17: {
+title: "incident_17.txt",
+content:
+`INCIDENT #17
+
+Sent childhood photos.
+
+SIDE EFFECTS:
+
+Unexpected emotional damage.`
+},
+
+incident23: {
+title: "incident_23.txt",
+content:
+`INCIDENT #23
+
+Thought:
+
+"It's over."
+
+STATUS:
+
+It was not over.`
+},
+
+incident31: {
+title: "incident_31.txt",
+content:
+`INCIDENT #31
+
+Stayed awake worrying
+about something.
+
+FOLLOW-UP REPORT:
+
+Cannot remember what it was.`
+},
+
+incident42: {
+title: "incident_42.txt",
+content:
+`INCIDENT #42
+
+Overthought entire situation.
+
+INVESTIGATION RESULTS:
+
+Situation was normal.`
+},
+
+report: {
+title: "final_report.txt",
+content:
+`FINAL REPORT
+
+After extensive investigation...
+
+subject survived:
+
+awkward moments
+bad days
+overthinking
+terrible weeks
+questionable decisions
+
+Current status:
+
+still here.
+
+Investigation complete.`
+}
+
+};
+
+function openFile(file){
+
+document
+.getElementById("popup")
+.classList.add("show");
+
+document
+.getElementById("fileTitle")
+.textContent =
+files[file].title;
+
+document
+.getElementById("fileContent")
+.textContent =
+files[file].content;
+}
+
+function closeFile(){
+
+document
+.getElementById("popup")
+.classList.remove("show");
+
+}
+
+</script>
+
+</body>
+</html>
