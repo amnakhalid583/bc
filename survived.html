@@ -52,7 +52,7 @@ position:absolute;
 top:80px;
 left:80px;
 
-width:560px;
+width:720px;
 
 background:rgba(255,255,255,.88);
 
@@ -82,6 +82,52 @@ border-bottom:
 1px solid rgba(0,0,0,.08);
 }
 
+  .folder-top,
+.window-top{
+
+height:54px;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding:0 18px;
+}
+
+.window-controls{
+
+display:flex;
+gap:8px;
+align-items:center;
+}
+
+.window-controls button{
+
+width:30px;
+height:30px;
+
+border:none;
+border-radius:8px;
+
+background:rgba(0,0,0,.05);
+
+cursor:pointer;
+
+font-size:14px;
+
+transition:.2s;
+}
+
+.window-controls button:hover{
+
+background:rgba(0,0,0,.1);
+}
+
+  .file{
+display:flex;
+align-items:center;
+}
+  
 .files{
 
 padding:10px;
@@ -204,9 +250,21 @@ color:#222;
 <div class="folder">
 
 <div class="folder-top">
-SURVIVAL ARCHIVE
+
+<span>SURVIVAL ARCHIVE</span>
+
+<div class="window-controls">
+
+<button onclick="goBack()">←</button>
+
+<button>□</button>
+
+<button onclick="goBack()">×</button>
+
 </div>
 
+</div>
+  
 <div class="files">
 
 <div class="file" onclick="openFile('incident04')">
@@ -247,19 +305,23 @@ final_report.txt
 
 <div class="window">
 
-<div class="window-top">
+ <div class="window-top">
 
 <span id="fileTitle">
 incident.txt
 </span>
 
-<span
-class="close"
-onclick="closeFile()">
-×
-</span>
+<div class="window-controls">
+
+<button onclick="closeFile()">—</button>
+
+<button>□</button>
+
+<button onclick="closeFile()">×</button>
 
 </div>
+
+</div> 
 
 <div
 class="window-content"
@@ -408,6 +470,12 @@ document
 
 }
 
+  function goBack(){
+
+window.location.href = "./desktop.html";
+
+}
+  
 </script>
 
 </body>
