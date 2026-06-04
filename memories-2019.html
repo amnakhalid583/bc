@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>2019 Memories</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
+body{
+overflow:hidden;
+background:#efefef;
+}
+
+.desktop{
+width:100vw;
+height:100vh;
+
+background:#efefef;
+
+background-image:
+radial-gradient(
+rgba(0,0,0,.025) 1px,
+transparent 1px
+);
+
+background-size:4px 4px;
+
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+/* FILE MANAGER */
+
+.folder{
+
+width:640px;
+
+background:rgba(255,255,255,.92);
+
+border-radius:22px;
+
+overflow:hidden;
+
+border:
+1px solid rgba(0,0,0,.06);
+
+box-shadow:
+0 20px 50px rgba(0,0,0,.08);
+}
+
+.folder-top{
+
+height:54px;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding:0 18px;
+
+border-bottom:
+1px solid rgba(0,0,0,.08);
+
+font-size:14px;
+font-weight:500;
+}
+
+.folder-buttons{
+display:flex;
+gap:14px;
+font-size:16px;
+opacity:.65;
+}
+
+.folder-buttons span{
+cursor:pointer;
+}
+
+.files{
+padding:10px;
+}
+
+.file{
+
+padding:16px;
+
+border-radius:12px;
+
+cursor:pointer;
+
+transition:.2s;
+
+font-size:15px;
+}
+
+.file:hover{
+background:rgba(0,0,0,.05);
+}
+
+/* VIEWER */
+
+.viewer{
+
+position:fixed;
+inset:0;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+background:rgba(0,0,0,.35);
+
+backdrop-filter:blur(8px);
+
+opacity:0;
+pointer-events:none;
+
+transition:.3s;
+
+z-index:100;
+}
+
+.viewer.show{
+opacity:1;
+pointer-events:auto;
+}
+
+.viewer-window{
+
+width:92vw;
+height:90vh;
+
+background:#222426;
+
+border-radius:24px;
+
+overflow:hidden;
+
+display:flex;
+flex-direction:column;
+
+box-shadow:
+0 30px 80px rgba(0,0,0,.35);
+}
+
+.viewer-top{
+
+height:56px;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding:0 20px;
+
+color:white;
+
+border-bottom:
+1px solid rgba(255,255,255,.06);
+}
+
+.viewer-title{
+font-size:14px;
+opacity:.85;
+}
+
+.window-controls{
+display:flex;
+gap:18px;
+font-size:17px;
+}
+
+.window-controls span{
+cursor:pointer;
+opacity:.7;
+}
+
+.window-controls span:hover{
+opacity:1;
+}
+
+.viewer-body{
+
+flex:1;
+
+position:relative;
+
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+/* PUZZLE */
+
+.puzzle-area{
+
+width:80vw;
+height:72vh;
+
+position:relative;
+}
+
+.piece{
+
+position:absolute;
+
+width:26.666%;
+height:33.333%;
+
+background-image:url("./recovered-photo.jpg");
+
+background-size:300% 300%;
+
+cursor:pointer;
+
+border-radius:6px;
+
+transition:
+left .45s ease,
+top .45s ease,
+transform .25s ease;
+
+box-shadow:
+0 8px 20px rgba(0,0,0,.25);
+}
+
+.piece:hover{
+transform:scale(1.02);
+}
+
+.piece.placed{
+cursor:default;
+z-index:20;
+}
+
+.complete-message{
+
+position:absolute;
+
+bottom:22px;
+left:50%;
+
+transform:translateX(-50%);
+
+color:white;
+
+font-size:14px;
+
+letter-spacing:.08em;
+
+opacity:0;
+
+transition:1s;
+}
+
+.complete-message.show{
+opacity:.6;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="desktop">
+
+<div class="folder">
+
+<div class="folder-top">
+
+<span>2019 Memories</span>
+
+<div class="folder-buttons">
+<span>—</span>
+<span>□</span>
+<span onclick="goBack()">✕</span>
+</div>
+
+</div>
+
+<div class="files">
+
+<div
+class="file"
+ondblclick="openPuzzle()">
+recovered_file.puzzle
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="viewer" id="viewer">
+
+<div class="viewer-window">
+
+<div class="viewer-top">
+
+<div class="viewer-title">
+recovered_file.puzzle
+</div>
+
+<div class="window-controls">
+<span>—</span>
+<span>□</span>
+<span onclick="closePuzzle()">✕</span>
+</div>
+
+</div>
+
+<div class="viewer-body">
+
+<div
+class="puzzle-area"
+id="puzzleArea">
+</div>
+
+<div
+class="complete-message"
+id="completeMessage">
+recovered successfully.
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const puzzleArea =
+document.getElementById("puzzleArea");
+
+const completeMessage =
+document.getElementById("completeMessage");
+
+let placedCount = 0;
+
+/* correct positions */
+
+const correctPositions = [
+
+{ x:0, y:0 },
+{ x:26.666, y:0 },
+{ x:53.333, y:0 },
+
+{ x:0, y:33.333 },
+{ x:26.666, y:33.333 },
+{ x:53.333, y:33.333 },
+
+{ x:0, y:66.666 },
+{ x:26.666, y:66.666 },
+{ x:53.333, y:66.666 }
+
+];
+
+/* scattered start positions */
+
+const startPositions = [
+
+{ x:-10, y:8 },
+{ x:80, y:4 },
+{ x:20, y:-8 },
+
+{ x:-8, y:52 },
+{ x:86, y:42 },
+{ x:18, y:80 },
+
+{ x:74, y:76 },
+{ x:-12, y:82 },
+{ x:48, y:-10 }
+
+];
+
+function createPuzzle(){
+
+puzzleArea.innerHTML = "";
+
+placedCount = 0;
+
+for(let i=0;i<9;i++){
+
+const piece =
+document.createElement("div");
+
+piece.className = "piece";
+
+const row = Math.floor(i / 3);
+const col = i % 3;
+
+/* image crop */
+
+ piece.style.backgroundPosition =
+`${col * -100}% ${row * -100}%`;
+
+/* scattered */
+
+piece.style.left =
+startPositions[i].x + "%";
+
+piece.style.top =
+startPositions[i].y + "%";
+
+piece.dataset.index = i;
+
+piece.addEventListener(
+"click",
+placePiece
+);
+
+puzzleArea.appendChild(piece);
+
+}
+
+completeMessage.classList.remove("show");
+
+}
+
+function placePiece(e){
+
+const piece = e.currentTarget;
+
+if(
+piece.classList.contains("placed")
+) return;
+
+const index =
+Number(piece.dataset.index);
+
+piece.classList.add("placed");
+
+piece.style.left =
+correctPositions[index].x + "%";
+
+piece.style.top =
+correctPositions[index].y + "%";
+
+piece.style.zIndex = 50;
+
+placedCount++;
+
+if(placedCount === 9){
+
+setTimeout(()=>{
+
+completePuzzle();
+
+},700);
+
+}
+
+}
+
+function completePuzzle(){
+
+completeMessage
+.classList
+.add("show");
+
+/* disable clicks after completion */
+
+document
+.querySelectorAll(".piece")
+.forEach(piece=>{
+
+piece.style.pointerEvents =
+"none";
+
+});
+
+}
+
+/* OPEN VIEWER */
+
+function openPuzzle(){
+
+document
+.getElementById("viewer")
+.classList
+.add("show");
+
+createPuzzle();
+
+}
+
+/* CLOSE VIEWER */
+
+function closePuzzle(){
+
+document
+.getElementById("viewer")
+.classList
+.remove("show");
+
+}
+
+/* BACK TO DESKTOP */
+
+function goBack(){
+
+window.location.href =
+"./desktop.html";
+
+}
+
+/* ESC KEY */
+
+document
+.addEventListener(
+"keydown",
+(e)=>{
+
+if(
+e.key === "Escape"
+){
+
+closePuzzle();
+
+}
+
+}
+);
+
+</script>
+
+</body>
+</html>
